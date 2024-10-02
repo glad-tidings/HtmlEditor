@@ -1,0 +1,404 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" >
+<head>
+    <title>انتخاب رنگ</title>
+    <style type="text/css">
+    body { background-color: transparent; margin: 10px; font-family: Tahoma; font-size: 7pt; }
+    div#Colors { float: right; width: 275px; }
+    div#Views { height: 150px; border: solid 1px; }
+    div#WebPalette { display: none; }
+    div#Tabbar { position: relative; right: 0px; top: 0px; }
+    div#Tabbar div { position: absolute; top: 0px; right: 1px; display: inline; width: 90px; height: 17px; text-align: center; line-height: 16px; cursor: pointer; }
+    div#Controls { float: left; display: inline; text-align: center; }
+    div#Preview { height: 35px; width: 85px; border: solid 1px; }
+    div#PreviewColor { position: relative; right: 0px; width: 85px; height: 25px; margin-bottom: 5px; word-wrap: break-word; }
+    div#Selected { height: 15px; width: 85px; border: solid 1px; }
+    div#Controls input { font-family: Tahoma; font-size: 7pt; }
+    div#Controls input#ColorTextBox { margin-top: 2px; width: 82px; }
+    div#Controls input#ClearButton { margin-top: 2px; width: 87px; }
+    table { border-collapse: collapse; display: block; margin: 5px; direction: rtl; }
+    td { width: 16px; height: 12px; border: solid 1px black; }
+    td.emptycell { border: none; }
+    div#WebPalette td { width: 14px; height: 10px; }
+    table#UseNamesTable { border-collapse: none; display: block; margin: 5px; }
+    table#UseNamesTable td { border: none; height: 15px; width: auto; vertical-align: middle; }
+    </style>
+
+<script type="text/javascript">
+
+function Initialized()
+{
+    return typeof fx == "object";
+}
+
+function OnMouseOver(td)
+{
+    if (!Initialized()) return;
+
+    var color = ConvertRGBtoHex(td.style.backgroundColor);
+    if (ShowNamedColors()) color = td.title;
+    document.getElementById("Preview").style.backgroundColor = color;
+    document.getElementById("PreviewColor").innerHTML = color;
+}
+
+function OnMouseOut(td)
+{
+    if (!Initialized()) return;
+
+    document.getElementById("Preview").style.backgroundColor = document.body.style.backgroundColor;
+    document.getElementById("PreviewColor").innerHTML = "";
+}
+
+</script>
+
+</head>
+<body>
+    <form id="form1" action="Color.htm" onsubmit="return false;">
+        <div>
+            <div id="Colors">
+
+                <div id="Views">
+    
+                    <div id="NamedColors">
+
+                        <div id="NamedColorsPlaceholder"></div>
+                        
+                        <table id="UseNamesTable">
+                            <tr>
+                                <td>
+                                    <input type="checkbox" id="UseNames" checked="checked" title="Use color names" onclick="OnUseColorNames(this)" />
+                                </td>
+                                <td>
+                                    <span id="UseNamesLabel">استفاده از نام</span>
+                                </td>
+                            </tr>
+                        </table>
+
+                    </div>
+
+                    <div id="WebPalette">
+                    
+                        <div id="WebPalettePlaceholder"></div>
+
+                    </div>
+                
+                </div>
+
+                <div id="Tabbar">
+                    <div id="NamedColorsTab" onclick="fx.OnTab(this)"><span>نام رنگ</span></div>
+                    <div id="WebPaletteTab" onclick="fx.OnTab(this)" style="left: 93px;"><span>پالت وب</span></div>
+                </div>
+
+            </div>
+
+            <div id="Controls">
+                <div>نمایش</div>
+                <div id="Preview"></div>
+                <div id="PreviewColor"></div>
+                <div>انتخاب شده</div>
+                <div id="Selected"></div>
+                <input id="ColorTextBox" type="text" size="7" onblur="OnColorTextBoxBlur(this)"/><br />
+                <input id="ClearButton" type="button" value="Clear" onclick="OnClear()" />
+            </div>
+
+        </div>
+
+    </form>
+
+<script type="text/javascript">
+
+var fx = null;
+var webPaletteInitialized = false;
+
+String.prototype.trim = function()
+{
+    return this.replace(/^\s+|\s+$/g, '');
+}
+
+String.prototype.padLeft = function(ch, num)
+{
+    var re = new RegExp(".{" + num + "}$");
+    var pad = "";
+
+    do
+    {
+        pad += ch;
+    }
+    while(pad.length < num)
+
+    return re.exec(pad + this);
+}
+
+function ConvertRGBtoHex(color)
+{
+    try
+    {
+        var rgb = color.split(',');
+        if (rgb.length != 3) return color;
+        if (rgb[0].toLowerCase().indexOf('rgb(') != 0) return color;
+        var r = rgb[0].split('(');
+        r = Number(r[1].trim());
+        var g = Number(rgb[1].trim());
+        var fx = Number(rgb[2].split(')')[0].trim());
+        var hexColor = '#' + r.toString(16).padLeft('0', 2) + g.toString(16).padLeft('0', 2) + fx.toString(16).padLeft('0', 2);
+        
+        return hexColor;
+    }
+    catch(e)
+    {
+        return color;
+    }
+}
+
+function ShowNamedColors()
+{
+    if (document.getElementById("NamedColors").style.display == "none") return false;
+    return document.getElementById("UseNames").checked;
+}
+
+function OnColor(td)
+{
+    var color = ConvertRGBtoHex(td.style.backgroundColor);
+    if (ShowNamedColors()) color = td.title;
+    document.getElementById("Selected").style.backgroundColor = color;
+    document.getElementById("ColorTextBox").value = color;
+}
+
+function OnColorTextBoxBlur(tb)
+{
+    var color = tb.value;
+    try
+    {
+        document.getElementById("Selected").style.backgroundColor = color;
+    }
+    catch(e)
+    {
+        OnClear();
+    }
+}
+
+function CreateWebPaletteTable()
+{
+    if (webPaletteInitialized) return;
+    
+    var webPalette = document.getElementById("WebPalettePlaceholder");
+    var html = GetWebPaletteColorsTable();
+    webPalette.innerHTML = html;
+    
+    webPaletteInitialized = true;
+}
+
+function OnBeforeViewChange(viewID)
+{
+    switch (viewID)
+    {
+        case "WebPalette" :
+            CreateWebPaletteTable();
+            break;
+        default :
+            break;
+    }
+}
+
+function GetColorsTable(id, colorsData, hasTitle, numColumns, showEmptyCells)
+{
+    var html = "";
+    var rows = colorsData.split(';');
+    titleIndex = 0;
+    colorIndex = hasTitle ? 1 : 0;
+    
+    html += '<table id="' + id + '" border="0" cellspacing="0" cellpadding="0">';
+    
+    for (var i = 0; i < rows.length; i++)
+    {
+        html += '<tr>';
+    
+        var cells = rows[i].split(',');
+        
+        for (var ii = 0; ii < cells.length; ii++)
+        {
+            var cell = cells[ii].split(':');
+            var title = cell[titleIndex];
+            var color = cell[colorIndex];
+
+            html += "<td style='background-color: " + color + "'; title='" + title + "' onclick='OnColor(this)' onmouseover='OnMouseOver(this)' onmouseout='OnMouseOut(this)'></td>";
+        }
+        
+        if (cells.length < numColumns)
+        {
+            if (showEmptyCells)
+            {
+                for (var iii = cells.length; iii < numColumns; iii++)
+                    html += "<td></td>";
+            }
+            else
+            {
+                var emptyCount = numColumns - cells.length;
+                html += "<td class='emptycell' colspan='" + emptyCount + "'></td>";
+            }
+        }
+        
+        html += '</tr>';
+    }
+    
+    html += '</table>';
+
+    return html;
+}
+
+function GetNamedColorsTable()
+{
+    var namedColorsData = "Green:#008000,Lime:#00ff00,Teal:#008080,Aqua:#00ffff,Navy:#000080,Blue:#0000ff,Purple:#800080,Fuchsia:#ff00ff,Maroon:#800000,Red:#ff0000,Olive:#808000,Yellow:#ffff00,White:#ffffff,Silver:#c0c0c0,Gray:#808080,Black:#000000;DarkOliveGreen:#556b2f,DarkGreen:#006400,DarkSlateGray:#2f4f4f,SlateGray:#708090,DarkBlue:#00008b,MidnightBlue:#191970,Indigo:#4b0082,DarkMagenta:#8b008b,Brown:#a52a2a,DarkRed:#8b0000,Sienna:#a0522d,SaddleBrown:#8b4513,DarkGoldenrod:#b8860b,Beige:#f5f5dc,Honeydew:#f0fff0,DimGray:#696969;OliveDrab:#6b8e23,ForestGreen:#228b22,DarkCyan:#008b8b,LightSlateGray:#778899,MediumBlue:#0000cd,DarkSlateBlue:#483d8b,DarkViolet:#9400d3,MediumVioletRed:#c71585,IndianRed:#cd5c5c,Firebrick:#b22222,Chocolate:#d2691e,Peru:#cd853f,Goldenrod:#daa520,LightGoldenrodYellow:#fafad2,MintCream:#f5fffa,DarkGray:#a9a9a9;YellowGreen:#9acd32,SeaGreen:#2e8b57,CadetBlue:#5f9ea0,SteelBlue:#4682b4,RoyalBlue:#4169e1,BlueViolet:#8a2be2,DarkOrchid:#9932cc,DeepPink:#ff1493,RosyBrown:#bc8f8f,Crimson:#dc143c,DarkOrange:#ff8c00,BurlyWood:#deb887,DarkKhaki:#bdb76b,LightYellow:#ffffe0,Azure:#f0ffff,LightGrey:#d3d3d3;LawnGreen:#7cfc00,MediumSeaGreen:#3cb371,LightSeaGreen:#20b2aa,DeepSkyBlue:#00bfff,DodgerBlue:#1e90ff,SlateBlue:#6a5acd,MediumOrchid:#ba55d3,PaleVioletRed:#db7093,Salmon:#fa8072,OrangeRed:#ff4500,SandyBrown:#f4a460,Tan:#d2b48c,Gold:#ffd700,Ivory:#fffff0,GhostWhite:#f8f8ff,Gainsboro:#dcdcdc;Chartreuse:#7fff00,LimeGreen:#32cd32,MediumAquamarine:#66cdaa,DarkTurquoise:#00ced1,CornflowerBlue:#6495ed,MediumSlateBlue:#7b68ee,Orchid:#da70d6,HotPink:#ff69b4,LightCoral:#f08080,Tomato:#ff6347,Orange:#ffa500,Bisque:#ffe4c4,Khaki:#f0e68c,Cornsilk:#fff8dc,Linen:#faf0e6,WhiteSmoke:#f5f5f5;GreenYellow:#adff2f,DarkSeaGreen:#8fbc8b,Turquoise:#40e0d0,MediumTurquoise:#48d1cc,SkyBlue:#87ceeb,MediumPurple:#9370db,Violet:#ee82ee,LightPink:#ffb6c1,DarkSalmon:#e9967a,Coral:#ff7f50,NavajoWhite:#ffdead,BlanchedAlmond:#ffebcd,PaleGoldenrod:#eee8aa,OldLace:#fdf5e6,SeaShell:#fff5ee,GhostWhite:#f8f8ff;PaleGreen:#98fb98,SpringGreen:#00ff7f,Aquamarine:#7fffd4,PowderBlue:#b0e0e6,LightSkyBlue:#87cefa,LightSteelBlue:#b0c4de,Plum:#dda0dd,Pink:#ffc0cb,LightSalmon:#ffa07a,Wheat:#f5deb3,Moccasin:#ffe4b5,AntiqueWhite:#faebd7,LemonChiffon:#fffacd,FloralWhite:#fffaf0,Snow:#fffafa,AliceBlue:#f0f8ff;LightGreen:#90ee90,MediumSpringGreen:#00fa9a,PaleTurquoise:#afeeee,LightCyan:#e0ffff,LightBlue:#add8e6,Lavender:#e6e6fa,Thistle:#d8bfd8,MistyRose:#ffe4e1,PeachPuff:#ffdab9,PapayaWhip:#ffefd5";
+    var html = GetColorsTable("NamedColorsTable", namedColorsData, true, 16, false);
+
+    return html;
+}
+
+function GetWebPaletteColorsTable()
+{
+    var webPaletteColorsData = "#000000,#111111,#222222,#333333,#444444,#555555,#666666,#777777,#888888,#999999,#aaaaaa,#bbbbbb,#cccccc,#dddddd,#eeeeee,#ffffff;#000000,#003300,#006600,#009900,#00cc00,#00ff00,#99ff00,#99cc00,#999900,#996600,#993300,#990000,#cc0000,#cc3300,#cc6600,#cc9900,#cccc00,#ccff00;#000033,#003333,#006633,#009933,#00cc33,#00ff33,#99ff33,#99cc33,#999933,#996633,#993333,#990033,#cc0033,#cc3333,#cc6633,#cc9933,#cccc33,#ccff33;#000066,#003366,#006666,#009966,#00cc66,#00ff66,#99ff66,#99cc66,#999966,#996666,#993366,#990066,#cc0066,#cc3366,#cc6666,#cc9966,#cccc66,#ccff66;#000099,#003399,#006699,#009999,#00cc99,#00ff99,#99ff99,#99cc99,#999999,#996699,#993399,#990099,#cc0099,#cc3399,#cc6699,#cc9999,#cccc99,#ccff99;#0000cc,#0033cc,#0066cc,#0099cc,#00cccc,#00ffcc,#99ffcc,#99cccc,#9999cc,#9966cc,#9933cc,#9900cc,#cc00cc,#cc33cc,#cc66cc,#cc99cc,#cccccc,#ccffcc;#0000ff,#0033ff,#0066ff,#0099ff,#00ccff,#00ffff,#99ffff,#99ccff,#9999ff,#9966ff,#9933ff,#9900ff,#cc00ff,#cc33ff,#cc66ff,#cc99ff,#ccccff,#ccffff;#3300ff,#3333ff,#3366ff,#3399ff,#33ccff,#33ffff,#ccffff,#ccccff,#cc99ff,#cc66ff,#cc33ff,#cc00ff,#ff00ff,#ff33ff,#ff66ff,#ff99ff,#ffccff,#ffffff;#3300cc,#3333cc,#3366cc,#3399cc,#33cccc,#33ffcc,#ccffcc,#cccccc,#cc99cc,#cc66cc,#cc33cc,#cc00cc,#ff00cc,#ff33cc,#ff66cc,#ff99cc,#ffcccc,#ffffcc;#330099,#333399,#336699,#339999,#33cc99,#33ff99,#ccff99,#cccc99,#cc9999,#cc6699,#cc3399,#cc0099,#ff0099,#ff3399,#ff6699,#ff9999,#ffcc99,#ffff99;#330066,#333366,#336666,#339966,#33cc66,#33ff66,#ccff66,#cccc66,#cc9966,#cc6666,#cc3366,#cc0066,#ff0066,#ff3366,#ff6666,#ff9966,#ffcc66,#ffff66;#330033,#333333,#336633,#339933,#33cc33,#33ff33,#ccff33,#cccc33,#cc9933,#cc6633,#cc3333,#cc0033,#ff0033,#ff3333,#ff6633,#ff9933,#ffcc33,#ffff33;#330000,#333300,#336600,#339900,#33cc00,#33ff00,#ccff00,#cccc00,#cc9900,#cc6600,#cc3300,#cc0000,#ff0000,#ff3300,#ff6600,#ff9900,#ffcc00,#ffff00";
+    var html = GetColorsTable("WebPaletteColorsTable", webPaletteColorsData, false, 18, true);
+
+    return html;
+}
+
+function OnClear()
+{
+    document.getElementById("Selected").style.backgroundColor = "";
+    document.getElementById("ColorTextBox").value = "";
+}
+
+function OnUseColorNames(cb)
+{
+    var useColorNames = cb.checked;
+    fx.colors.useColorNames = useColorNames;
+    
+    var tb = document.getElementById("ColorTextBox");
+    var color = tb.value;
+    
+    if (color.length > 0)
+    {
+        var translatedColor = FindNamedColor(color, useColorNames);
+        if (translatedColor)
+        {
+            tb.value = translatedColor;
+            document.getElementById("Selected").style.backgroundColor = translatedColor;
+        }
+    }
+}
+
+function FindNamedColor(color, toNamed)
+{
+    var namedColors = document.getElementById("NamedColorsTable").getElementsByTagName("td");
+    var findColor = color.trim().toLowerCase();
+    
+    for (var i = 0; i < namedColors.length; i++)
+    {
+        var translatedColor = ConvertRGBtoHex(namedColors[i].style.backgroundColor.toLowerCase());
+
+        if (toNamed)
+        {
+            if (translatedColor == findColor) 
+                return namedColors[i].title;
+        }
+        else
+        {
+            if (namedColors[i].title.toLowerCase() == findColor)
+                return translatedColor;
+        }
+    }
+    
+    return null;
+}
+
+function InitializeValues(parentElement)
+{
+    var color = "";
+
+    switch (fx.name)
+    {
+        case "ForeColor" :
+            var isFont = fx.IsTagName(parentElement, "font");
+            color = isFont ? parentElement.color : parentElement.style.color;
+            break;
+        case "BackColor" :
+            color = parentElement.style.backgroundColor;
+            break;
+        default :
+            break;
+    }
+    
+    if (color && color.length > 0)
+    {
+        var namedColor = FindNamedColor(color, fx.colors.useColorNames);
+        if (namedColor) color = namedColor;
+        document.getElementById("Selected").style.backgroundColor = color;
+        document.getElementById("ColorTextBox").value = color;
+    }
+}
+
+function CreateNamedColorsTable()
+{
+    document.getElementById("NamedColorsPlaceholder").innerHTML = GetNamedColorsTable();
+}
+
+function Initialize(frameworkBehavior)
+{
+    CreateNamedColorsTable();
+    
+    fx = frameworkBehavior;
+    
+    fx.InitializeDocument();
+    fx.InitializeViews("Views", "NamedColors,WebPalette");
+    fx.InitializeTabs("Tabbar", "NamedColorsTab,WebPaletteTab");
+
+    if (!fx.isIE)
+    {
+        document.getElementById("Controls").style.width = "87px";
+        document.getElementById("PreviewColor").style.width = "109px";
+        document.getElementById("PreviewColor").style.left = "-12px";
+    }
+    
+    document.getElementById("Preview").style.borderColor = fx.colors.borders;
+    document.getElementById("Preview").style.borderColor = fx.colors.borders;
+    document.getElementById("Selected").style.borderColor = fx.colors.borders;
+    document.getElementById("ColorTextBox").style.borderColor = fx.colors.borders;
+    
+    document.getElementById("UseNames").checked = fx.colors.useColorNames;
+
+    if (fx.isFirefox) 
+        document.getElementById("PreviewColor").style.overflow = "hidden";
+    
+    var tb = document.getElementById("ColorTextBox");
+    
+    if (fx.IsParentOnList("font,span"))
+    {
+        InitializeValues(fx.context.parentElement);
+    }
+    
+    fx.Focus("ColorTextBox");
+}
+
+function OnOK()
+{
+    var commandName = "";
+    
+    switch (fx.name)
+    {
+        case "ForeColor" :
+            commandName = "forecolor";
+            break;
+        case "BackColor" :
+	        var commandName = fx.isIE ? 'backcolor' : 'hilitecolor';
+            break;
+        default :
+            return;
+    }
+    
+    fx.ExecuteCommand(commandName, document.getElementById("ColorTextBox").value);
+}
+
+</script>    
+
+</body>
+</html>

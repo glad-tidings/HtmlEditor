@@ -1,0 +1,373 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" >
+<head>
+    <title>افزودن تصویر</title>
+    <style type="text/css">
+    body { background-color: transparent; margin: 10px; font-family: Tahoma; font-size: 7pt; }
+    div#Views { height: 150px; border: solid 1px; }
+    div#Preview { display: none; }
+    div#Tabbar { position: relative; right: 0px; top: 0px; }
+    div#Tabbar div { position: absolute; top: 0px; right: 1px; display: inline; width: 90px; height: 17px; text-align: center; line-height: 16px; cursor: pointer; }
+    table { width: 368px; border-collapse: collapse; margin: 5px; direction: rtl; }
+    td { width: 92px; border: solid 1px; height: 20px; vertical-align: middle; cursor: pointer;}
+    td.value { width: 273px; cursor: default; }
+    td span { margin-right: 5px; }
+    td input { font-family: Tahoma; font-size: 7pt; font-weight: bold; margin-left: 3px; margin-right: 3px; }
+    td select { width: 75px; border: solid 1px; background-color: transparent; color: transparent; font-family: Tahoma; font-size: 7pt;  font-weight: bold; margin-right: 3px; }
+    td input.url { width: 185px; border: solid 1px; display: inline-block; }
+    td a.selectimg { width: 80px; display: inline-block; text-align: center; cursor: pointer; }
+    td input.text { width: 268px; border: solid 1px; }
+    td input.size { width: 30px; border: solid 1px; }
+    td input.unit { width: 15px; border: solid 1px; }
+    td input.hidden { display: none; }
+    td input.images { width: 60px; font-weight: normal; margin-top: 1px; margin-left: 0px; height: 16px; font-size: 6pt; }
+    </style>
+    <script type="text/javascript" src="/PEFM/scripts/jquery-1.11.3.min.js"></script>
+</head>
+<body onload="pageLoad();">
+    <form id="form1" action="Image.htm" onsubmit="return false;">
+        <div>
+            <div id="Views">
+                
+                <div id="Properties">
+
+                    <table id="PropertiesTable" border="0" cellpadding="0" cellspacing="0">
+                        <tr>
+                            <td onclick="fx.SelectLabel(this)"><span>آدرس</span></td>
+                            <td class="value">
+                                <input type="text" id="UrlTextBox" class="url" maxlength="1024" onfocus="fx.OnTextBoxFocus(this)" onblur="fx.OnTextBoxBlur(this)" />
+                                <a id="selectimg" class="selectimg">انتخاب تصویر</a>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td onclick="fx.SelectLabel(this)"><span>متن</span></td>
+                            <td class="value"><input type="text" id="AlternateTextTextBox" class="text" maxlength="512" onfocus="fx.OnTextBoxFocus(this)" onblur="fx.OnTextBoxBlur(this)" /></td>
+                        </tr>
+                        <tr>
+                            <td onclick="fx.SelectLabel(this)"><span>اندازه</span></td>
+                            <td class="value">
+                                <span>عرض:</span>
+                                <input type="text" id="HeightTextBox" class="size" maxlength="4" onfocus="fx.OnTextBoxFocus(this)" onblur="fx.OnTextBoxBlur(this)" />
+                                <span>طول:</span>
+                                <input type="text" id="WidthTextBox" class="size" maxlength="4" onfocus="fx.OnTextBoxFocus(this)" onblur="fx.OnTextBoxBlur(this)" />
+                                <span>حاشیه:</span>
+                                <input type="text" id="BorderWidthTextBox" class="unit" maxlength="2" onfocus="fx.OnTextBoxFocus(this)" onblur="fx.OnTextBoxBlur(this)" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td onclick="fx.SelectLabel(this)"><span>موقعیت</span></td>
+                            <td class="value">
+                                <span>افقی:</span>
+                                <select id="FloatSelectBox" onfocus="fx.SelectLabel(this)">
+                                    <option value="">خالی</option>
+                                    <option value="left">چپ</option>
+                                    <option value="right">راست</option>
+                                </select>
+                                <span>عمودی:</span>
+                                <select id="VerticalAlignSelectBox" onfocus="fx.SelectLabel(this)">
+                                    <option value="">خالی</option>
+                                    <option value="text-top">بالا</option>
+                                    <option value="middle">وسط</option>
+                                    <option value="text-bottom">پایین</option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td onclick="fx.SelectLabel(this)"><span>فاصله</span></td>
+                            <td class="value">
+                                <span>چپ:</span>
+                                <input type="text" id="MarginLeftTextBox" class="unit" maxlength="2" onfocus="fx.OnTextBoxFocus(this)" onblur="fx.OnTextBoxBlur(this)" />
+                                <span>بالا:</span>
+                                <input type="text" id="MarginTopTextBox" class="unit" maxlength="2" onfocus="fx.OnTextBoxFocus(this)" onblur="fx.OnTextBoxBlur(this)" />
+                                <span>راست:</span>
+                                <input type="text" id="MarginRightTextBox" class="unit" maxlength="2" onfocus="fx.OnTextBoxFocus(this)" onblur="fx.OnTextBoxBlur(this)" />
+                                <span>پایین:</span>
+                                <input type="text" id="MarginBottomTextBox" class="unit" maxlength="2" onfocus="fx.OnTextBoxFocus(this)" onblur="fx.OnTextBoxBlur(this)" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td onclick="fx.SelectLabel(this)"><span>متن راهنما</span></td>
+                            <td class="value"><input type="text" id="ToolTipTextBox" class="text" maxlength="512" onfocus="fx.OnTextBoxFocus(this)" onblur="fx.OnTextBoxBlur(this)" /></td>
+                        </tr>
+                    </table>
+
+                </div>
+                
+                <div id="Preview"></div>
+                
+            </div>
+            
+            <div id="Tabbar">
+                <div id="PropertiesTab" onclick="fx.OnTab(this)"><span>خصوصیات</span></div>
+                <div id="PreviewTab" onclick="fx.OnTab(this)" style="right: 93px;"><span>نمایش</span></div>
+            </div>
+            
+        </div>
+    </form>
+
+<script type="text/javascript">
+
+var fx = null;
+
+String.prototype.trim = function()
+{
+    return this.replace(/^\s+|\s+$/g, '');
+}
+
+function OnBeforeViewChange(viewID)
+{
+    switch (viewID)
+    {
+        case "Preview" :
+            Preview();
+            break;
+        default :
+            break;
+    }
+}
+
+function OnAfterViewChange(viewID)
+{
+    switch (viewID)
+    {
+        case "Properties" :
+            fx.Focus('UrlTextBox');
+            break;
+        default :
+            break;
+    }
+}
+
+function GetInitialPreviewOuterHTML()
+{
+    var colors = fx.options.colors;
+    var bgColor = "background-color:" + colors.body;
+    var fgColor = "color:" + colors.text;
+
+    var outerHTML = 
+        "<!DOCTYPE html PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN' 'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'>" +
+        "<html xmlns='http://www.w3.org/1999/xhtml'>" +
+        "<head>" + 
+        "<title>مشاهده</title>" + 
+        "<style type='text/css'>" + 
+        "body {" + bgColor + "; " + fgColor + "; font-family: Tahoma; font-size: 7pt; margin: 0px; padding: 0px; direction: rtl; }" +
+        "</style>" + 
+        "</head>" + 
+        "<body></body>" + 
+        "</html>";
+        
+    return outerHTML;
+}
+
+function GetProperties()
+{
+    var p = new Object();
+    p.elements = new Object();
+    p.values = new Object();
+    
+    p.elements.urlTextBox = document.getElementById("UrlTextBox");
+    p.elements.altTextBox = document.getElementById("AlternateTextTextBox");
+    p.elements.heightTextBox = document.getElementById("HeightTextBox");
+    p.elements.widthTextBox = document.getElementById("WidthTextBox");
+    p.elements.borderWidthTextBox = document.getElementById("BorderWidthTextBox");
+    p.elements.floatSelectBox = document.getElementById("FloatSelectBox");
+    p.elements.verticalAlignSelectBox = document.getElementById("VerticalAlignSelectBox");
+    p.elements.marginLeftTextBox = document.getElementById("MarginLeftTextBox");
+    p.elements.marginTopTextBox = document.getElementById("MarginTopTextBox");
+    p.elements.marginRightTextBox = document.getElementById("MarginRightTextBox");
+    p.elements.marginBottomTextBox = document.getElementById("MarginBottomTextBox");
+    p.elements.toolTipTextBox = document.getElementById("ToolTipTextBox");
+    
+    p.values.url = fx.GetValue(p.elements.urlTextBox);
+    p.values.alt = fx.GetValue(p.elements.altTextBox);
+    p.values.height = fx.GetValue(p.elements.heightTextBox);
+    p.values.width = fx.GetValue(p.elements.widthTextBox);
+    p.values.borderWidth = fx.GetValue(p.elements.borderWidthTextBox);
+    p.values.styleFloat = fx.GetValue(p.elements.floatSelectBox);
+    p.values.verticalAlign = fx.GetValue(p.elements.verticalAlignSelectBox);
+    p.values.marginLeft = fx.GetValue(p.elements.marginLeftTextBox);
+    p.values.marginTop = fx.GetValue(p.elements.marginTopTextBox);
+    p.values.marginRight = fx.GetValue(p.elements.marginRightTextBox);
+    p.values.marginBottom = fx.GetValue(p.elements.marginBottomTextBox);
+    p.values.toolTip = fx.GetValue(p.elements.toolTipTextBox);
+    
+    var style = "";
+    var v = p.values;
+    
+    if (v.height) style += "height: " + v.height + "px; ";
+    if (v.width) style += "width: " + v.width + "px; ";
+    if (v.borderWidth) style += "border: solid " + v.borderWidth + "px; ";
+    if (v.styleFloat) style += "float: " + v.styleFloat + "; ";
+    if (v.verticalAlign) style += "vertical-align: " + v.verticalAlign + "; ";
+    if (v.marginLeft) style += "margin-left: " + v.marginLeft + "px; ";
+    if (v.marginTop) style += "margin-top: " + v.marginTop + "px; ";
+    if (v.marginRight) style += "margin-right: " + v.marginRight + "px; ";
+    if (v.marginBottom) style += "margin-bottom: " + v.marginBottom + "px; ";
+    
+    p.style = style;
+        
+    return p;
+}
+
+function GetImageHtml()
+{
+    var html = "";
+    var p = GetProperties();
+    var v = p.values;    
+    
+    if (v.url)
+    {
+        html += "<img src='" + v.url + "'";
+        html += " alt='" + (v.alt ? v.alt : "") + "'";
+        
+        if (p.style.length > 0)
+            html += " style='" + p.style + "'";
+                
+        if (v.toolTip)
+            html += " title='" + v.toolTip + "'";
+        
+        html += "/>";
+    }
+    
+    return html;
+}
+
+function GetLatinText()
+{
+    return "پارس‌الکام در سال 1385 تاسیس و در زمینه نرم‌افزار‌های تحت وب، سیستم مدیریت محتوا و پورتال فعالیت خود را آغاز نمود. هم‌اکنون با دارا بودن بیش از صدها مشتری و تجربه بالا و نیروی انسانی متخصص بسوی جلو گام برمی‌داریم."
+}
+
+function Preview()
+{
+    var f = document.getElementById("PreviewFrame");
+    var d = f.contentDocument || f.contentWindow.document || f.document;
+    
+    var html = GetImageHtml();
+    
+    if (html.length == 0)
+        html += "آدرس عکس وارد نشده";
+    else
+        html += GetLatinText();
+    
+    d.body.innerHTML = html;
+}
+
+function InitializePreview()
+{
+    var preview = document.getElementById("Preview");
+    
+    var f = document.createElement("iframe");
+    f.id = "PreviewFrame";
+    f.frameBorder = "0";
+    f.height = "140px";
+    f.width = "368px";
+    f.scrolling = "auto";
+    f.style.margin = "5px";
+    
+    preview.appendChild(f);
+    
+    var frameDocument = f.contentWindow.document;
+    var outerHTML = GetInitialPreviewOuterHTML();
+    
+    frameDocument.open("text/html", "replace");
+    frameDocument.write(outerHTML);
+    frameDocument.close();
+}
+
+function InitializeValues(img)
+{
+    var p = GetProperties();
+    var e = p.elements;
+    var s = img.style;
+    
+    var url = img.getAttribute("src");
+    e.urlTextBox.value = url ? url : "";
+    e.altTextBox.value = img.alt ? img.alt : "";
+    e.heightTextBox.value = s.height ? fx.RemoveUnit(s.height) : "";
+    e.widthTextBox.value = s.width ? fx.RemoveUnit(s.width) : "";
+    e.borderWidthTextBox.value = s.borderWidth ? fx.GetBorderWidth(s.borderWidth) : "";
+    e.floatSelectBox.value = 
+        s.styleFloat ? fx.FindOption(e.floatSelectBox, s.styleFloat) : "";
+    e.verticalAlignSelectBox.value = 
+        s.verticalAlign ? fx.FindOption(e.verticalAlignSelectBox, s.verticalAlign) : "";
+    e.marginLeftTextBox.value = s.marginLeft ? fx.RemoveUnit(s.marginLeft) : "";
+    e.marginTopTextBox.value = s.marginTop ? fx.RemoveUnit(s.marginTop) : "";
+    e.marginRightTextBox.value = s.marginRight ? fx.RemoveUnit(s.marginRight) : "";
+    e.marginBottomTextBox.value = s.marginBottom ? fx.RemoveUnit(s.marginBottom) : "";
+    e.toolTipTextBox.value = img.title ? img.title : "";
+}
+
+function SetValues(img)
+{
+    var p = GetProperties();
+    var v = p.values;
+    
+    img.src = v.url ? v.url : "";
+    img.alt = v.alt ? v.alt : "";
+    img.style.cssText = p.style;
+    img.title = v.toolTip ? v.toolTip : "";
+}
+
+function Initialize(frameworkBehavior)
+{
+    fx = frameworkBehavior;
+    
+    fx.InitializeDocument();
+    fx.InitializeViews("Views", "Properties,Preview");
+    fx.InitializeTabs("Tabbar", "PropertiesTab,PreviewTab");
+    fx.InitializeTables("PropertiesTable");
+    
+    InitializePreview();
+
+    if (fx.IsParent("img"))
+    {
+        InitializeValues(fx.context.parentElement);
+    }
+    
+    fx.Focus('UrlTextBox');
+}
+
+function OnOK()
+{
+    if (fx.IsParent("img"))
+    {
+        SetValues(fx.context.parentElement);
+    }
+    else
+    {
+        var html = GetImageHtml();
+        if (html.length == 0) return;
+        
+        fx.ExecuteCommand("inserthtml", html);
+    }
+}
+
+function getParameterByName(name, url) {
+    if (!url) url = window.location.href;
+    name = name.replace(/[\[\]]/g, "\\$&");
+    var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+        results = regex.exec(url);
+    if (!results) return null;
+    if (!results[2]) return '';
+    return decodeURIComponent(results[2].replace(/\+/g, " "));
+}
+
+function pageLoad() {
+    document.getElementById('selectimg').href = "javascript:ImageManager();";
+}
+
+function ImageManager() {
+    var opener = window.open(getParameterByName("purl") + '/PEFM/?filter=image&token=' + getParameterByName("token"), 'targetWindow', 'toolbar=no,location=no,status=no,menubar=no,scrollbars=no,resizable=no,width=950, height=600');
+    function handlePostMessage(e) {
+        var data = e.originalEvent.data;
+        if (data.source === 'richfilemanager') {
+            document.getElementById("UrlTextBox").value = getParameterByName("purl") + data.preview_url;
+            opener.close();
+        }
+        $(window).off('message', handlePostMessage);
+    }
+    $(window).on('message', handlePostMessage);
+};
+</script>
+</body>
+</html>

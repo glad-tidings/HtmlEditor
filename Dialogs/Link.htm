@@ -1,0 +1,194 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" >
+<head>
+    <title>افزودن لینک</title>
+    <style type="text/css">
+    body { background-color: transparent; margin: 10px; font-family: Tahoma; font-size: 7pt; }
+    div#Views { height: 150px; border: solid 1px; }
+    table { width: 368px; border-collapse: collapse; margin: 5px; direction: rtl; }
+    td { width: 60px; border: solid 1px; height: 20px; vertical-align: middle; cursor: pointer; }
+    td.value { width: 305px; cursor: default; }
+    td span { margin-right: 5px; }
+    td input { border: solid 1px; background-color: transparent; color: transparent; font-family: Tahoma; font-size: 7pt; margin-left: 3px; margin-right: 3px; }
+    td select { width: 100px; border: solid 1px; background-color: transparent; color: transparent; font-family: Tahoma; font-size: 7pt; margin-right: 3px; }
+    td input.url { width: 295px; }
+    td input.target { width: 189px; }
+    </style>
+</head>
+<body>
+    <form id="form1" action="Link.htm" onsubmit="return false;">
+        <div>
+
+            <div id="Views">
+                
+                <div id="Properties">
+
+                    <table id="PropertiesTable" border="0" cellpadding="0" cellspacing="0">
+                        <tr>
+                            <td onclick="fx.SelectLabel(this)"><span>آدرس</span></td>
+                            <td class="value"><input type="text" id="UrlTextBox" class="url" maxlength="1024" onfocus="fx.OnTextBoxFocus(this)" onblur="fx.OnTextBoxBlur(this)" /></td>
+                        </tr>
+                        <tr>
+                            <td onclick="fx.SelectLabel(this)"><span>باز شدن در</span></td>
+                            <td class="value">
+                                <select id="TargetSelectBox" onfocus="fx.SelectLabel(this)" onchange="fx.OnSelectBoxChange(this, 'Other', 'TargetTextBox')" >
+                                    <option value="">پنجره جاری</option>
+                                    <option value="_blank">پنجره جدید</option>
+                                    <option value="Other">غیره</option>
+                                </select>
+                                <input type="text" id="TargetTextBox" class="target" maxlength="256" style="display: none;" onfocus="fx.OnTextBoxFocus(this)" onblur="fx.OnTextBoxBlur(this)" />
+                            </td>
+                        </tr>
+                    </table>
+
+                </div>
+                
+            </div>
+        </div>
+    </form>
+
+<script type="text/javascript">
+
+var fx = null;
+
+String.prototype.trim = function()
+{
+    return this.replace(/^\s+|\s+$/g, '');
+}
+
+function GetProperties()
+{
+    var p = new Object();
+    p.elements = new Object();
+    p.values = new Object();
+    
+    p.elements.urlTextBox = document.getElementById("UrlTextBox");
+    p.elements.targetSelectBox = document.getElementById("TargetSelectBox");
+    p.elements.targetTextBox = document.getElementById("TargetTextBox");
+    
+    p.values.url = fx.GetValue(p.elements.urlTextBox);
+    
+    var target = fx.GetValue(p.elements.targetSelectBox);
+    if (target && target == "Other")
+        target = fx.GetValue(p.elements.targetTextBox);
+    
+    p.values.target = target;
+    
+    return p;
+}
+
+function GetHyperlinkHtml()
+{
+    var html = "";
+    var p = GetProperties();
+    var v = p.values;    
+    
+    if (v.url)
+    {
+        html += "<a href='" + v.url + "'";
+        
+        if (v.target)
+            html += " target='" + v.target + "'";
+        
+        html += ">";
+    }
+    
+    return html;
+}
+
+function InitializeValues(a)
+{
+    var p = GetProperties();
+    var e = p.elements;
+    
+    var url = a.getAttribute("href");
+    e.urlTextBox.value = url ? url : "";
+
+    var target = a.target ? a.target.trim() : "";
+    var targetOther = "";
+
+    if (target.length > 0)
+    {
+        target = fx.FindOption(e.targetSelectBox, target);
+        if (target.length == 0)
+        {
+            targetOther = a.target.trim();
+            target = "Other";
+            e.targetTextBox.style.display = "inline";
+        }
+    }
+    
+    e.targetSelectBox.value = target;
+    e.targetTextBox.value = targetOther;
+}
+
+function SetValues(a)
+{
+    var p = GetProperties();
+    var v = p.values;
+    
+    a.href = v.url ? v.url : "";
+    
+    var target = v.target ? v.target : "";
+    if (target.length == 0)
+        a.removeAttribute("target");
+    else
+        a.target = target;
+}
+
+function Initialize(frameworkBehavior)
+{
+    fx = frameworkBehavior;
+    
+    fx.InitializeDocument();
+    fx.InitializeViews("Views", "Properties");
+    fx.InitializeTables("PropertiesTable");
+    
+    var a = fx.FindParent("a");
+    
+    if (a)
+    {
+        InitializeValues(a);
+    }
+    
+    fx.Focus('UrlTextBox');
+}
+
+var tempuri = "http://tempuri.org";
+var tempargs = "?link=new";
+
+function FindLink()
+{
+    var links = fx.GetDesignModeDocument().body.getElementsByTagName("a");
+    if (links == null) return null;
+    
+    for (var i = 0; i < links.length; i++)
+    {
+        if (links[i].href == tempuri + tempargs) return links[i];
+        if (links[i].href == tempuri + "/" + tempargs) return links[i];
+    }
+    
+    return null;
+}
+
+function OnOK()
+{
+    if (fx.IsParent("a"))
+    {
+        SetValues(fx.context.parentElement);
+    }
+    else
+    {
+        fx.ExecuteCommand("createlink", tempuri + tempargs);
+        
+        var link = FindLink();
+        if (link == null) return;
+        
+        SetValues(link);
+    }
+}
+
+</script>    
+
+</body>
+</html>
