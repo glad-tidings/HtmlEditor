@@ -1,0 +1,126 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.21022</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{BC99173D-2EF8-4D7E-B0AE-3BC1CC55E3B6}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>ParsElecom.HtmlEditor</RootNamespace>
+    <AssemblyName>ParsElecom.HtmlEditor</AssemblyName>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <OldToolsVersion>3.5</OldToolsVersion>
+    <UpgradeBackupLocation />
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>TRACE;DEBUG</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE;ASPNET3_5</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data.DataSetExtensions">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Web.Extensions">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Xml.Linq">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Web" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="HtmlEditor.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Dialogs\Blank.htm" />
+    <EmbeddedResource Include="Dialogs\Color.htm" />
+    <EmbeddedResource Include="Dialogs\Image.htm" />
+    <EmbeddedResource Include="Dialogs\Link.htm" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Images\backcolor.gif" />
+    <EmbeddedResource Include="Images\bold.gif" />
+    <EmbeddedResource Include="Images\bulletedlist.gif" />
+    <EmbeddedResource Include="Images\center.gif" />
+    <EmbeddedResource Include="Images\design.gif" />
+    <EmbeddedResource Include="Images\forecolor.gif" />
+    <EmbeddedResource Include="Images\html.gif" />
+    <EmbeddedResource Include="Images\image.gif" />
+    <EmbeddedResource Include="Images\indent.gif" />
+    <EmbeddedResource Include="Images\italic.gif" />
+    <EmbeddedResource Include="Images\justify.gif" />
+    <EmbeddedResource Include="Images\left.gif" />
+    <EmbeddedResource Include="Images\link.gif" />
+    <EmbeddedResource Include="Images\new.gif" />
+    <EmbeddedResource Include="Images\orderedlist.gif" />
+    <EmbeddedResource Include="Images\outdent.gif" />
+    <EmbeddedResource Include="Images\pixel.gif" />
+    <EmbeddedResource Include="Images\right.gif" />
+    <EmbeddedResource Include="Images\rule.gif" />
+    <EmbeddedResource Include="Images\save.gif" />
+    <EmbeddedResource Include="Images\separator.gif" />
+    <EmbeddedResource Include="Images\subscript.gif" />
+    <EmbeddedResource Include="Images\superscript.gif" />
+    <EmbeddedResource Include="Images\underline.gif" />
+    <EmbeddedResource Include="Images\view.gif" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Images\Toolstrips\Default\Begin.bmp" />
+    <EmbeddedResource Include="Images\Toolstrips\Default\Body.bmp" />
+    <EmbeddedResource Include="Images\Toolstrips\Default\End.bmp" />
+    <EmbeddedResource Include="Images\Toolstrips\Default\separator.gif" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Images\Toolstrips\VisualStudio\Begin.bmp" />
+    <EmbeddedResource Include="Images\Toolstrips\VisualStudio\Body.bmp" />
+    <EmbeddedResource Include="Images\Toolstrips\VisualStudio\End.bmp" />
+    <EmbeddedResource Include="Images\Toolstrips\VisualStudio\separator.gif" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Scripts\HtmlEditor.js" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Scripts\DialogBehavior.js" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Images\Toolstrips\PE\Begin.bmp" />
+    <EmbeddedResource Include="Images\Toolstrips\PE\Body.bmp" />
+    <EmbeddedResource Include="Images\Toolstrips\PE\End.bmp" />
+    <EmbeddedResource Include="Images\Toolstrips\PE\separator.gif" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
