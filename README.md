@@ -3,4 +3,4 @@ The HtmlEditor component is a client-side text editor. The editor allows users t
 
 
 
-![](http://visit.parselecom.com/Api/Visit/17/8673A1)
+![](http://visit.parselecom.com/Api/Visit/glad-tidings/HtmlEditor/8673A1)
